@@ -1,6 +1,7 @@
 import os
 import codecs
 
+# Obviously if you are using this them change to the directory where the configs are
 root_dir = '/Users/brad/Dropbox/learning/cisco/Workbooks v5/Workbooks v5/VIRL/INE/INE.VIRL.initial.configs/advanced.technology.labs'
 
 locations = {
