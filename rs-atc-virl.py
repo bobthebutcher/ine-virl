@@ -1,7 +1,6 @@
 import os
 import codecs
 
-# if using this update to root directory on your machine obviously
 root_dir = '/Users/brad/Dropbox/learning/cisco/Workbooks v5/Workbooks v5/VIRL/INE/INE.VIRL.initial.configs/advanced.technology.labs'
 
 locations = {
@@ -325,6 +324,8 @@ for sub_dir, dirs, files in os.walk(root_dir):
                 #print(device_name, locations[device_name])
                 with open('{0}/{1}'.format(sub_dir, conf_file), 'rb') as fl:
                     encoded_text = fl.read()
+                    
+                    # for some reason some of the files I had were decoded in utf-16le
                     try:
                         f.write(build_router_config(device_name, locations[device_name], encoded_text.decode('UTF-8')))
                     except UnicodeDecodeError:
