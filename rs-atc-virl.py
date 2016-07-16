@@ -1,6 +1,9 @@
 import os
 import codecs
 
+# if using this update to root directory on your machine obviously
+root_dir = '/Users/brad/Dropbox/learning/cisco/Workbooks v5/Workbooks v5/VIRL/INE/INE.VIRL.initial.configs/advanced.technology.labs'
+
 locations = {
     'R1': '53,35',
     'R2': '53,94',
@@ -309,16 +312,14 @@ line vty 0 4
         <interface id="10" name="GigabitEthernet2/3"/>
 </node>'''
 
-root_dir = '/Users/brad/Dropbox/learning/cisco/Workbooks v5/Workbooks v5/VIRL/INE/INE.VIRL.initial.configs/advanced.technology.labs'
-
 for sub_dir, dirs, files in os.walk(root_dir):
     virl_filename = '{0}.virl'.format(sub_dir.split('/')[-1].replace('.', '-'))
-    print(sub_dir.split('/')[-1])
-    print(virl_filename)
-    with open(virl_filename, 'w') as f:
+    # print(sub_dir.split('/')[-1])
+    # print(virl_filename)
+    with open('{0}/{1}'.format(root_dir, virl_filename), 'w') as f:
         f.write(header)
         for conf_file in files:
-            print(conf_file)
+            # print(conf_file)
             if conf_file.startswith('R') and conf_file.endswith('.txt'):
                 device_name = conf_file.split('.')[0]
                 #print(device_name, locations[device_name])
