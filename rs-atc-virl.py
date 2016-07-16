@@ -325,7 +325,7 @@ for sub_dir, dirs, files in os.walk(root_dir):
                 with open('{0}/{1}'.format(sub_dir, conf_file), 'rb') as fl:
                     encoded_text = fl.read()
                     
-                    # for some reason some of the files I had were decoded in utf-16le
+                    # for some reason some of the files I had were encoded in utf-16le
                     try:
                         f.write(build_router_config(device_name, locations[device_name], encoded_text.decode('UTF-8')))
                     except UnicodeDecodeError:
