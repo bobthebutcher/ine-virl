@@ -4,6 +4,14 @@ import codecs
 # Obviously if you are using this them change to the directory where the configs are
 root_dir = '/Users/brad/Dropbox/learning/cisco/Workbooks v5/Workbooks v5/VIRL/INE/INE.VIRL.initial.configs/advanced.technology.labs'
 
+switch_subtype = 'IOSvL2'
+switch_image = 'IOSvL2 [a69a29a3-8446-4f66-beea-cf1cfe1772fe]'
+switch_flavor = 'IOSvL2 [4b19f77e-ad8e-4b09-b08d-4e11e792fc19]'
+router_subtype = 'IOSv'
+router_image = 'IOSv [5340a778-440a-45b0-b8de-2271612732ba]'
+router_flavor = 'IOSv [3d253112-e8b6-4db9-b133-67621bf58eb2]'
+
+
 locations = {
     'R1': '53,35',
     'R2': '53,94',
@@ -34,9 +42,9 @@ footer = '''
     <connection dst="/virl:topology/virl:node[11]/virl:interface[10]" src="/virl:topology/virl:node[2]/virl:interface[1]"/>
 </topology>'''
 
-def build_router_config(router_name, router_location, router_config):
+def build_router_config(router_name, router_location, router_config, router_image, router_flavor, router_subtype):
     router_config = '''
-    <node name="{0}" type="SIMPLE" subtype="IOSv" location="{1}" vmImage="IOSv [5340a778-440a-45b0-b8de-2271612732ba]" vmFlavor="IOSv [3d253112-e8b6-4db9-b133-67621bf58eb2]">
+    <node name="{0}" type="SIMPLE" subtype="{5}" location="{1}" vmImage="{3}" vmFlavor="{4}">
             <extensions>
                 <entry key="Auto-generate config" type="Boolean">false</entry>
                 <entry key="config" type="String">{2}</entry>
@@ -44,11 +52,11 @@ def build_router_config(router_name, router_location, router_config):
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
             <interface id="2" name="GigabitEthernet0/3"/>
-    </node>'''.format(router_name, router_location, router_config)
+    </node>'''.format(router_name, router_location, router_config, router_image, router_flavor, router_subtype)
     return router_config
 
 switch_config = '''
-<node name="SW5" type="SIMPLE" subtype="IOSvL2" location="450,295" vmImage="IOSvL2 [a69a29a3-8446-4f66-beea-cf1cfe1772fe]" vmFlavor="IOSvL2 [4b19f77e-ad8e-4b09-b08d-4e11e792fc19]">
+<node name="SW5" type="SIMPLE" subtype="{2}" location="450,295" vmImage="{0}" vmFlavor="{1}">
         <extensions>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">service timestamps debug datetime msec
@@ -310,7 +318,7 @@ line vty 0 4
         <interface id="8" name="GigabitEthernet2/1"/>
         <interface id="9" name="GigabitEthernet2/2"/>
         <interface id="10" name="GigabitEthernet2/3"/>
-</node>'''
+</node>'''.format(switch_image, switch_flavor, switch_subtype)
 
 for sub_dir, dirs, files in os.walk(root_dir):
     virl_filename = '{0}.virl'.format(sub_dir.split('/')[-1].replace('.', '-'))
@@ -325,15 +333,17 @@ for sub_dir, dirs, files in os.walk(root_dir):
                 #print(device_name, locations[device_name])
                 with open('{0}/{1}'.format(sub_dir, conf_file), 'rb') as fl:
                     encoded_text = fl.read()
-                    
+
                     # for some reason some of the files I had were encoded in bom utf-16le
                     try:
-                        f.write(build_router_config(device_name, locations[device_name], encoded_text.decode('UTF-8')))
+                        f.write(build_router_config(device_name, locations[device_name], 
+                            encoded_text.decode('UTF-8'), router_image, router_flavor, router_subtype))
                     except UnicodeDecodeError:
                         bom = codecs.BOM_UTF16_LE             
                         assert encoded_text.startswith(bom)   
                         encoded_text = encoded_text[len(bom):]
                         decoded_text = encoded_text.decode('utf-16le') 
-                        f.write(build_router_config(device_name, locations[device_name], decoded_text))
+                        f.write(build_router_config(device_name, locations[device_name], decoded_text, 
+                            router_image, router_flavor, router_subtype))
         f.write(switch_config)
         f.write(footer)
