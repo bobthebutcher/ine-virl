@@ -122,8 +122,11 @@ vlan 100
 !
 vlan 108
 !
+vlan 109
+!
 vlan 146
 !
+vlan 210
 !
 !
 !
@@ -148,7 +151,7 @@ interface GigabitEthernet0/2
  desc to R2
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk allowed vlan 1,23,100
+ switchport trunk allowed vlan 1,23,100,210
  media-type rj45
  negotiation auto
  spanning-tree portfast
@@ -211,7 +214,7 @@ interface GigabitEthernet2/1
  desc to R9
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk allowed vlan 1,9,79
+ switchport trunk allowed vlan 1,9,79,109
  media-type rj45
  negotiation auto
  spanning-tree portfast
@@ -220,7 +223,7 @@ interface GigabitEthernet2/2
  desc to R10
  switchport trunk encapsulation dot1q
  switchport mode trunk
- switchport trunk allowed vlan 1,10,108
+ switchport trunk allowed vlan 1,10,108,109,210
  media-type rj45
  negotiation auto
  spanning-tree portfast
